@@ -1,51 +1,98 @@
 body {
-	font-family: Arial, sans-serif;
+	font-family: 'Inter', Arial, sans-serif;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
 	margin: 0;
-	background-color: #1e1e1e;
+	background-color: #121212;
 	color: #e0e0e0;
+	line-height: 1.6;
 }
 
 .container {
 	display: flex;
-	width: 80%;
+	width: 90%;
 	max-width: 1200px;
+	background-color: #1e1e1e;
+	border-radius: 12px;
+	overflow: hidden;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .todo-list,
 .counter {
 	width: 50%;
-	padding: 20px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-	background-color: #333;
-	border: 1px solid #444;
+	padding: 30px;
+}
+
+.todo-list {
+	background-color: #2a2a2a;
+	border-right: 1px solid #3a3a3a;
+}
+
+.todo-list-header {
+	display: flex;
+	margin-bottom: 20px;
+	align-items: center;
+}
+
+.todo-list-header input {
+	flex-grow: 1;
+	margin-right: 10px;
+	padding: 10px;
+	background-color: #3a3a3a;
+	border: 1px solid #4a4a4a;
+	color: #e0e0e0;
+	border-radius: 6px;
+}
+
+.todo-list-header button {
+	padding: 10px 15px;
+	background-color: #4a90e2;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.todo-list-header button:hover {
+	background-color: #5aa0f2;
 }
 
 .todo-list ul {
 	list-style-type: none;
 	padding: 0;
+	max-height: 400px;
+	overflow-y: auto;
 }
 
 .todo-list ul li {
-	padding: 10px;
-	border-bottom: 1px solid #555;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	background-color: #333;
+	border-bottom: 1px solid #444;
+	transition: background-color 0.3s ease;
 }
 
-.todo-list input,
-.todo-list button {
-	padding: 10px;
-	margin-top: 10px;
-	width: calc(100% - 22px);
-	background-color: #444;
-	border: 1px solid #555;
-	color: #e0e0e0;
+.todo-list ul li:hover {
+	background-color: #3a3a3a;
 }
 
-.todo-list button {
+.todo-list ul li .delete-btn {
+	background: none;
+	border: none;
+	color: #ff4d4d;
 	cursor: pointer;
+	font-weight: bold;
+	transition: color 0.3s ease;
+}
+
+.todo-list ul li .delete-btn:hover {
+	color: #ff6b6b;
 }
 
 .counter {
@@ -53,9 +100,47 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	background-color: #252525;
 }
 
 #counterDisplay {
-	font-size: 2em;
+	font-size: 2.5em;
+	margin-bottom: 20px;
+	color: #4a90e2;
+	text-align: center;
+}
+
+#editDateButton {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	background-color: #4a4a4a;
+	color: #e0e0e0;
+	border: none;
+	padding: 8px 15px;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+#dateInputContainer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	margin-top: 20px;
+}
+
+#dateInputContainer input,
+#dateInputContainer button {
+	margin: 10px 0;
+	padding: 10px;
+	background-color: #3a3a3a;
+	border: 1px solid #4a4a4a;
+	color: #e0e0e0;
+	border-radius: 6px;
+}
+
+#dateInputContainer button {
+	background-color: #4a90e2;
+	border: none;
+	cursor: pointer;
 }

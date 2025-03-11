@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Productivity Tab</title>
-		<link rel="stylesheet" href="styles.css" />
-	</head>
-	<body>
-		<div class="container">
-			<div class="todo-list">
-				<h2>To-Do List</h2>
-				<ul id="todoItems"></ul>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Productivity Tab</title>
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="todo-list">
+			<div class="todo-list-header">
 				<input type="text" id="newTodo" placeholder="Add a new task" />
 				<button id="addTodo">Add Task</button>
 			</div>
-			<div class="counter">
-				<h2>Time Counter</h2>
-				<div id="counterDisplay">Loading...</div>
+			<ul id="todoItems"></ul>
+		</div>
+		<div class="counter">
+			<div id="counterDisplay">Loading...</div>
+			<button id="editDateButton">Edit</button>
+			<div id="dateInputContainer" style="display: none;">
+				<input type="datetime-local" id="newDate" />
+				<button id="saveDateButton">Save Date</button>
 			</div>
 		</div>
-		<script src="script.js"></script>
-	</body>
+	</div>
+	<script src="script.js"></script>
+</body>
 </html>
