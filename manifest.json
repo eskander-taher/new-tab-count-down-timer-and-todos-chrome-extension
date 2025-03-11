@@ -1,0 +1,15 @@
+{
+	"manifest_version": 3,
+	"name": "Productivity Tab",
+	"version": "1.0",
+	"description": "A new tab page with a to-do list and a counter.",
+	"permissions": ["storage"],
+	"chrome_url_overrides": {
+		"newtab": "newtab.html"
+	},
+	"icons": {
+		"16": "images/icon16.ico",
+		"48": "images/icon48.ico",
+		"128": "images/icon128.ico"
+	}
+}
