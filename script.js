@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+	const todosForm = document.getElementById("todosForm");
 	const todoList = document.getElementById("todoItems");
 	const newTodoInput = document.getElementById("newTodo");
 	const addTodoButton = document.getElementById("addTodo");
@@ -8,7 +9,12 @@ document.addEventListener("DOMContentLoaded", function () {
 	const newDateInput = document.getElementById("newDate");
 	const saveDateButton = document.getElementById("saveDateButton");
 
-	let targetDate = new Date("1990-01-01"); // Default date
+	let targetDate = new Date("1990-01-01T00:00:00"); // Default date at midnight
+
+	// preventing page refresh
+	todosForm.addEventListener("submit", (e) => {
+		e.preventDefault();
+	});
 
 	// Load todos from storage
 	chrome.storage.sync.get(["todos", "targetDate"], function (result) {
@@ -18,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		});
 		if (result.targetDate) {
 			targetDate = new Date(result.targetDate);
+			targetDate.setHours(0, 0, 0, 0); // Ensure the time is set to midnight
 		}
 		updateCounter();
 	});
@@ -38,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		// Create text span
 		const todoText = document.createElement("span");
+		todoText.classList.add("todo-text");
 		todoText.textContent = text;
 
 		// Create delete button
@@ -69,12 +77,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	editDateButton.addEventListener("click", function () {
 		dateInputContainer.style.display = "block";
 		// Set the value of the input to the current target date
-		newDateInput.value = targetDate.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+		newDateInput.value = targetDate.toISOString().slice(0, 10); // Format: YYYY-MM-DD
 	});
 
 	// Save the new date when save button is clicked
 	saveDateButton.addEventListener("click", function () {
-		targetDate = new Date(newDateInput.value);
+		const dateValue = newDateInput.value;
+		targetDate = new Date(dateValue + "T00:00:00"); // Ensure the time is set to midnight
 		chrome.storage.sync.set({ targetDate: targetDate.toISOString() });
 		dateInputContainer.style.display = "none";
 		updateCounter();
@@ -91,13 +100,18 @@ document.addEventListener("DOMContentLoaded", function () {
 				(timeDiff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
 			);
 			const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-			// const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-			counterDisplay.textContent = `${months} months, ${days} days, ${hours} hours`;
+			const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+			counterDisplay.innerHTML = `	
+				<p>${months} Months</p>
+				<p>${days} Days</p>
+				<p>${hours} Hours</p>
+				<p>${minutes} Minutes</p>
+			`;
 		} else {
 			counterDisplay.textContent = "Date has passed!";
 		}
 	}
 
 	// Update the counter every second
-	setInterval(updateCounter, 60 * 1000);
+	setInterval(updateCounter,  10000);
 });

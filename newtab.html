@@ -3,27 +3,32 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="icon" type="image/x-icon" href="/images/icon16.ico">
 	<title>Productivity Tab</title>
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 	<div class="container">
 		<div class="todo-list">
-			<div class="todo-list-header">
-				<input type="text" id="newTodo" placeholder="Add a new task" />
-				<button id="addTodo">Add Task</button>
-			</div>
+			<form id="todosForm">
+				<div class="todo-list-header">
+					<input type="text" id="newTodo" placeholder="Add a new task" />
+					<button id="addTodo">+</button>
+				</div>
+			</form>
 			<ul id="todoItems"></ul>
 		</div>
 		<div class="counter">
 			<div id="counterDisplay">Loading...</div>
 			<button id="editDateButton">Edit</button>
 			<div id="dateInputContainer" style="display: none;">
-				<input type="datetime-local" id="newDate" />
-				<button id="saveDateButton">Save Date</button>
+				<input type="date" id="newDate" />
+				<button id="saveDateButton">Save</button>
 			</div>
 		</div>
 	</div>
 	<script src="script.js"></script>
 </body>
 </html>
+
+
