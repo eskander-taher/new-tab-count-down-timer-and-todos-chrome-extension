@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const todosForm = document.getElementById("todosForm");
-	const todoList = document.getElementById("todoItems");
+    const todoList = document.getElementById("todoItems");
 	const newTodoInput = document.getElementById("newTodo");
 	const newTimerInput = document.getElementById("newTimer");
 	const addTodoButton = document.getElementById("addTodo");
@@ -49,14 +49,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		const li = document.createElement("li");
 		li.innerHTML = `
         <div class="todo">
+            <div class="todo-item-actions">
+                <button class="start-btn">▶️</button>
+                <button class="done-btn">✔️</button> <!-- Done Button -->
+            </div>
             <p class="todo-p">
                 <span class="todo-text">${text} </span><span class="todo-timer">${time} min</span>
             </p>
-            <div class="todo-item-actions">
-                <button class="start-btn">▶️</button>
-                <button class="delete-btn">✕</button>
-                <button class="done-btn">✔️</button> <!-- Done Button -->
-            </div>
+            <button class="delete-btn">✕</button>
         </div>
     `;
 
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		}
 
 		let countdown;
-		let remainingTime = time * 60; // Convert to seconds
+		let remainingTime = time * 1; // Convert to seconds
 		let isPaused = false;
 
 		startBtn.addEventListener("click", () => {
@@ -87,6 +87,14 @@ document.addEventListener("DOMContentLoaded", function () {
 							clearInterval(countdown);
 							timerSpan.textContent = "0:00";
 							timerEndSound.play();
+							timerEndSound.addEventListener(
+								"ended",
+								function () {
+									timerEndSound.currentTime = 0;
+									timerEndSound.play();
+								},
+								false
+							);
 						}
 					}
 				}, 1000);
@@ -99,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		deleteBtn.addEventListener("click", () => {
 			clearInterval(countdown);
+			timerEndSound.pause();
+			timerEndSound.currentTime = 0;
 			todoList.removeChild(li);
 			saveTodos();
 		});
@@ -107,6 +117,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		doneBtn.addEventListener("click", () => {
 			li.classList.toggle("done-todo");
 			saveTodos();
+		});
+
+		// Stop the sound when the todo item is clicked
+		li.addEventListener("click", () => {
+			timerEndSound.pause();
+			timerEndSound.currentTime = 0;
 		});
 
 		todoList.appendChild(li);
