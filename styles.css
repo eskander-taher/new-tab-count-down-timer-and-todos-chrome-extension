@@ -73,7 +73,7 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 12px;
+	/* padding: 12px; */
 	background-color: #333;
 	border-bottom: 1px solid #444;
 	transition: background-color 0.3s ease;
@@ -83,14 +83,7 @@ body {
 	background-color: #3a3a3a;
 }
 
-.todo-list ul li .delete-btn {
-	background: none;
-	border: none;
-	color: #ff4d4d;
-	cursor: pointer;
-	font-weight: bold;
-	transition: color 0.3s ease;
-}
+
 
 .todo-list ul li .delete-btn:hover {
 	color: #ff6b6b;
@@ -152,4 +145,44 @@ body {
 	font-size: 20px;
 }
 
-	
+#newTodo{
+	width: 90%;
+}
+#newTimer{
+	width: 10%;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.todo{
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	align-items: center;
+}
+
+button{
+	background-color: transparent;
+	cursor: pointer;
+}
+
+.running-timer{
+	font-weight: bolder;
+	font-size: 20px;
+	color: gold;
+}
+
+.done-todo{
+	opacity: 30%;
+}
+
+.todo-p{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 80%;
+
+}

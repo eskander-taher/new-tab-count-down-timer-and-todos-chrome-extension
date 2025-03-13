@@ -1,30 +1,34 @@
 document.addEventListener("DOMContentLoaded", function () {
-	const todosForm = document.getElementById("todosForm");
+    const todosForm = document.getElementById("todosForm");
 	const todoList = document.getElementById("todoItems");
 	const newTodoInput = document.getElementById("newTodo");
+	const newTimerInput = document.getElementById("newTimer");
 	const addTodoButton = document.getElementById("addTodo");
 	const counterDisplay = document.getElementById("counterDisplay");
 	const editDateButton = document.getElementById("editDateButton");
 	const dateInputContainer = document.getElementById("dateInputContainer");
 	const newDateInput = document.getElementById("newDate");
 	const saveDateButton = document.getElementById("saveDateButton");
+	const timerEndSound = document.getElementById("timerEndSound");
 
 	let targetDate = new Date("1990-01-01T00:00:00"); // Default date at midnight
 
-	// preventing page refresh
+	// Preventing page refresh
 	todosForm.addEventListener("submit", (e) => {
 		e.preventDefault();
 	});
 
-	// Load todos from storage
+	// Load todos and history from storage
 	chrome.storage.sync.get(["todos", "targetDate"], function (result) {
-		const todos = result.todos || [];
-		todos.forEach((todo) => {
-			addTodoItem(todo);
-		});
+		todos = result.todos || [];
+
+		console.log(todos);
+
+		todos.forEach((todo) => addTodoItem(todo.text, todo.time, todo.done));
+
 		if (result.targetDate) {
 			targetDate = new Date(result.targetDate);
-			targetDate.setHours(0, 0, 0, 0); // Ensure the time is set to midnight
+			targetDate.setHours(0, 0, 0, 0);
 		}
 		updateCounter();
 	});
@@ -33,44 +37,89 @@ document.addEventListener("DOMContentLoaded", function () {
 	addTodoButton.addEventListener("click", function () {
 		const todoText = newTodoInput.value.trim();
 		if (todoText) {
-			addTodoItem(todoText);
+			addTodoItem(todoText, parseInt(newTimerInput.value.trim()) || 0, false);
+			newTimerInput.value = "";
 			newTodoInput.value = "";
 			saveTodos();
 		}
 	});
 
 	// Add todo item to the list
-	function addTodoItem(text) {
+	function addTodoItem(text, time, done) {
 		const li = document.createElement("li");
+		li.innerHTML = `
+        <div class="todo">
+            <p class="todo-p">
+                <span class="todo-text">${text} </span><span class="todo-timer">${time} min</span>
+            </p>
+            <div class="todo-item-actions">
+                <button class="start-btn">▶️</button>
+                <button class="delete-btn">✕</button>
+                <button class="done-btn">✔️</button> <!-- Done Button -->
+            </div>
+        </div>
+    `;
 
-		// Create text span
-		const todoText = document.createElement("span");
-		todoText.classList.add("todo-text");
-		todoText.textContent = text;
+		const startBtn = li.querySelector(".start-btn");
+		const deleteBtn = li.querySelector(".delete-btn");
+		const doneBtn = li.querySelector(".done-btn"); // Done Button
+		const timerSpan = li.querySelector(".todo-timer");
 
-		// Create delete button
-		const deleteBtn = document.createElement("button");
-		deleteBtn.textContent = "✕";
-		deleteBtn.classList.add("delete-btn");
+		if (done) {
+			li.classList.add("done-todo");
+		}
 
-		// Add delete functionality
-		deleteBtn.addEventListener("click", function () {
+		let countdown;
+		let remainingTime = time * 60; // Convert to seconds
+		let isPaused = false;
+
+		startBtn.addEventListener("click", () => {
+			timerSpan.classList.add("running-timer");
+			if (!countdown) {
+				countdown = setInterval(() => {
+					if (!isPaused) {
+						remainingTime--;
+						const minutes = Math.floor(remainingTime / 60);
+						const seconds = remainingTime % 60;
+						timerSpan.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+
+						if (remainingTime <= 0) {
+							clearInterval(countdown);
+							timerSpan.textContent = "0:00";
+							timerEndSound.play();
+						}
+					}
+				}, 1000);
+				startBtn.textContent = "⏸️";
+			} else {
+				isPaused = !isPaused;
+				startBtn.textContent = isPaused ? "▶️" : "⏸️";
+			}
+		});
+
+		deleteBtn.addEventListener("click", () => {
+			clearInterval(countdown);
 			todoList.removeChild(li);
 			saveTodos();
 		});
 
-		// Append elements
-		li.appendChild(todoText);
-		li.appendChild(deleteBtn);
+		// Event listener for the Done button
+		doneBtn.addEventListener("click", () => {
+			li.classList.toggle("done-todo");
+			saveTodos();
+		});
+
 		todoList.appendChild(li);
 	}
 
 	// Save todos to storage
 	function saveTodos() {
-		const todos = Array.from(todoList.children).map(
-			(li) => li.querySelector("span").textContent
-		);
-		chrome.storage.sync.set({ todos: todos });
+		const currentTodos = Array.from(todoList.children).map((li) => ({
+			text: li.querySelector(".todo-text").textContent,
+			time: parseInt(li.querySelector(".todo-timer").textContent.split(" ")[0]),
+			done: li.classList.contains("done-todo"),
+		}));
+		chrome.storage.sync.set({ todos: currentTodos });
 	}
 
 	// Show date input when edit button is clicked
@@ -101,17 +150,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			);
 			const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 			const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-			counterDisplay.innerHTML = `	
-				<p>${months} Months</p>
-				<p>${days} Days</p>
-				<p>${hours} Hours</p>
-				<p>${minutes} Minutes</p>
-			`;
+			counterDisplay.innerHTML = `
+            <p>${minutes} Minutes</p>
+            <p>${hours} Hours</p>
+            <p>${days} Days</p>
+            <p>${months} Months</p>
+            `;
 		} else {
 			counterDisplay.textContent = "Date has passed!";
 		}
 	}
 
 	// Update the counter every second
-	setInterval(updateCounter,  10000);
+	setInterval(updateCounter, 10000);
 });
